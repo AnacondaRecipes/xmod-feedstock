@@ -48,7 +48,7 @@ about:
   license_family: MIT
   license_file: LICENSE
   dev_url: https://github.com/rec/xmod
-  doc_url: https://github.com/rec/xmod
+  doc_url: https://rec.github.io/xmod
 
 extra:
   recipe-maintainers:

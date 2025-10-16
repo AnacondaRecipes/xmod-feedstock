@@ -6,36 +6,49 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/xmod-{{ version }}.tar.gz
-  sha256: 38c76486b9d672c546d57d8035df0beb7f4a9b088bc3fb2de5431ae821444377
+  url: https://github.com/rec/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 504565c14feaef0801f3161ad4d4cefa9228f3cbcedc6e1cdf276456de87deca
 
 build:
-  noarch: python
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 1
+  number: 0
+  skip: true  # [py<38]
 
 requirements:
   host:
-    - python {{ python_min }}
-    - poetry-core
+    - python
     - pip
+    - poetry-core
   run:
-    - python >={{ python_min }}
+    - python
+
+# E AssertionError: assert (<module 'test.modules.partial_function' from '$SRC_DIR/test/modules/partial_function.py'> and False)
+# Following test is not valid for Python>3.9
+{% set deselect_tests = "" %}
+{% set deselect_tests = deselect_tests + " --deselect=test/test_xmod.py::TestXmod::test_partial_function" %}  # [py>39]
 
 test:
+  source_files:
+    - test
   imports:
     - xmod
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v test {{ deselect_tests }}
   requires:
     - pip
-    - python {{ python_min }}
+    - pytest
 
 about:
   home: https://github.com/rec/xmod
-  summary: 🌱 Turn any object into a module 🌱
+  summary: Turn any object into a module
+  description: Turn any object into a module
   license: MIT
+  license_family: MIT
   license_file: LICENSE
+  dev_url: https://github.com/rec/xmod
+  doc_url: https://rec.github.io/xmod
 
 extra:
   recipe-maintainers:

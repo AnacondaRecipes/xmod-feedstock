@@ -1,24 +1,25 @@
 {% set name = "xmod" %}
-{% set version = "1.8.1" %}
+{% set version = "1.10.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://github.com/rec/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 504565c14feaef0801f3161ad4d4cefa9228f3cbcedc6e1cdf276456de87deca
+  sha256: ed8b42a59ff9bcd372df0ffd10cbde717207f5ab44d6614433dd0f438ce50b36
 
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  skip: true  # [py<38]
+  skip: true  # [py<310]
 
 requirements:
   host:
     - python
     - pip
     - poetry-core
+    - hatchling
   run:
     - python
 

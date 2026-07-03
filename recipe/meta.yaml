@@ -1,12 +1,8 @@
 {% set name = "xmod" %}
 {% set version = "1.10.0" %}
-{% set deselect_tests = "" %}
-{% set deselect_tests = 'deselect_tests + " --deselect=test/test_xmod.py::TestXmod::test_partial_function"' %}  # [py>39]
 
-# E AssertionError: assert (<module 'test.modules.partial_function' from '$SRC_DIR/test/modules/partial_function.py'> and False)
-# Following test is not valid for Python>3.9
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -16,15 +12,21 @@ source:
 build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  skip: true  # [py<38]
+  skip: true  # [py<310]
 
 requirements:
   host:
     - python
     - pip
     - poetry-core
+    - hatchling
   run:
     - python
+
+# E AssertionError: assert (<module 'test.modules.partial_function' from '$SRC_DIR/test/modules/partial_function.py'> and False)
+# Following test is not valid for Python>3.9
+{% set deselect_tests = "" %}
+{% set deselect_tests = deselect_tests + " --deselect=test/test_xmod.py::TestXmod::test_partial_function" %}  # [py>39]
 
 test:
   source_files:
